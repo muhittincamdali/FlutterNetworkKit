@@ -3,8 +3,8 @@ description: >
   Enterprise-grade networking toolkit for Flutter applications. Features include
   interceptor chains, automatic token refresh, response caching, retry with
   exponential backoff, offline queue, GraphQL support, WebSocket with
-  auto-reconnect, Server-Sent Events, multipart uploads with progress tracking,
-  and file downloads with resume capability.
+  auto-reconnect, SSL certificate pinning, multipart uploads with progress
+  tracking, and comprehensive request monitoring.
 version: 1.0.0
 homepage: https://github.com/muhittincamdali/FlutterNetworkKit
 repository: https://github.com/muhittincamdali/FlutterNetworkKit
@@ -19,9 +19,10 @@ dependencies:
   flutter:
     sdk: flutter
   dio: ^5.4.0
-  freezed_annotation: ^2.4.1
-  json_annotation: ^4.8.1
+  http: ^1.2.0
   connectivity_plus: ^5.0.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
   path_provider: ^2.1.1
   crypto: ^3.0.3
   web_socket_channel: ^2.4.0
@@ -32,6 +33,8 @@ dependencies:
   logging: ^1.2.0
   uuid: ^4.2.1
   shared_preferences: ^2.2.2
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.8.1
 
 dev_dependencies:
   flutter_test:
@@ -42,5 +45,6 @@ dev_dependencies:
   json_serializable: ^6.7.1
   mockito: ^5.4.3
   build_verify: ^3.1.0
+  hive_generator: ^2.0.1
 
 flutter:
