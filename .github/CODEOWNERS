@@ -1,0 +1,7 @@
+# Code Owners for FlutterNetworkKit
+* @muhittincamdali
+/lib/ @muhittincamdali
+/test/ @muhittincamdali
+/example/ @muhittincamdali
+*.md @muhittincamdali
+pubspec.yaml @muhittincamdali
