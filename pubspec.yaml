@@ -4,8 +4,9 @@ description: >
   interceptor chains, automatic token refresh, response caching, retry with
   exponential backoff, offline queue, GraphQL support, WebSocket with
   auto-reconnect, SSL certificate pinning, multipart uploads with progress
-  tracking, and comprehensive request monitoring.
-version: 1.0.0
+  tracking, request batching, SSE support, network inspector UI, and
+  comprehensive request monitoring.
+version: 1.1.0
 homepage: https://github.com/muhittincamdali/FlutterNetworkKit
 repository: https://github.com/muhittincamdali/FlutterNetworkKit
 issue_tracker: https://github.com/muhittincamdali/FlutterNetworkKit/issues
@@ -35,6 +36,7 @@ dependencies:
   shared_preferences: ^2.2.2
   freezed_annotation: ^2.4.1
   json_annotation: ^4.8.1
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:
