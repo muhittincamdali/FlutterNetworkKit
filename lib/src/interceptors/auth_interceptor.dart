@@ -279,7 +279,7 @@ class ApiKeyInterceptor extends NetworkInterceptor {
 
     if (queryParamName != null) {
       // Add as query parameter
-      final params = Map<String, dynamic>.from(request.queryParameters ?? {});
+      final params = Map<String, Object?>.from(request.queryParameters ?? {});
       params[queryParamName!] = apiKey;
       return InterceptorResult.next(request.copyWith(queryParameters: params));
     } else {

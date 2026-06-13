@@ -263,7 +263,7 @@ class MonitoringSummary {
   final double errorRate;
 
   /// Converts to JSON.
-  Map<String, dynamic> toJson() {
+  Map<String, Object?> toJson() {
     return {
       'totalRequests': totalRequests,
       'successfulRequests': successfulRequests,

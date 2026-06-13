@@ -58,7 +58,7 @@ class WebSocketMessage {
   }
 
   /// Creates a JSON message.
-  factory WebSocketMessage.json(dynamic data) {
+  factory WebSocketMessage.json(Object? data) {
     return WebSocketMessage._(
       type: MessageType.json,
       data: data,
@@ -67,7 +67,7 @@ class WebSocketMessage {
   }
 
   /// Creates a message from raw data.
-  factory WebSocketMessage.fromRaw(dynamic rawData) {
+  factory WebSocketMessage.fromRaw(Object? rawData) {
     if (rawData is String) {
       try {
         final jsonData = json.decode(rawData);
@@ -85,7 +85,7 @@ class WebSocketMessage {
   final MessageType type;
 
   /// The message data.
-  final dynamic data;
+  final Object? data;
 
   /// Binary data for binary messages.
   final Uint8List? binaryData;
@@ -94,7 +94,7 @@ class WebSocketMessage {
   final DateTime? timestamp;
 
   /// Additional metadata associated with this message.
-  final Map<String, dynamic>? metadata;
+  final Map<String, Object?>? metadata;
 
   /// Returns true if this is a text message.
   bool get isText => type == MessageType.text;
@@ -113,13 +113,13 @@ class WebSocketMessage {
   }
 
   /// Returns the JSON content of this message.
-  Map<String, dynamic>? get jsonData {
-    if (type == MessageType.json && data is Map<String, dynamic>) {
-      return data as Map<String, dynamic>;
+  Map<String, Object?>? get jsonData {
+    if (type == MessageType.json && data is Map<String, Object?>) {
+      return data as Map<String, Object?>;
     }
     if (type == MessageType.text) {
       try {
-        return json.decode(data as String) as Map<String, dynamic>;
+        return json.decode(data as String) as Map<String, Object?>;
       } catch (_) {
         return null;
       }
@@ -144,7 +144,7 @@ class WebSocketMessage {
   }
 
   /// Creates a copy with metadata added.
-  WebSocketMessage withMetadata(Map<String, dynamic> metadata) {
+  WebSocketMessage withMetadata(Map<String, Object?> metadata) {
     return WebSocketMessage._(
       type: type,
       data: data,
@@ -186,8 +186,8 @@ class WebSocketMessage {
 /// Builder for creating WebSocket messages.
 class WebSocketMessageBuilder {
   MessageType _type = MessageType.text;
-  dynamic _data;
-  Map<String, dynamic>? _metadata;
+  Object? _data;
+  Map<String, Object?>? _metadata;
 
   /// Sets the message type to text.
   WebSocketMessageBuilder text(String text) {
@@ -204,14 +204,14 @@ class WebSocketMessageBuilder {
   }
 
   /// Sets the message type to JSON.
-  WebSocketMessageBuilder json(Map<String, dynamic> data) {
+  WebSocketMessageBuilder json(Map<String, Object?> data) {
     _type = MessageType.json;
     _data = data;
     return this;
   }
 
   /// Adds metadata to the message.
-  WebSocketMessageBuilder meta(String key, dynamic value) {
+  WebSocketMessageBuilder meta(String key, Object? value) {
     _metadata ??= {};
     _metadata![key] = value;
     return this;

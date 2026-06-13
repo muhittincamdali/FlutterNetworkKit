@@ -177,7 +177,7 @@ class WebSocketClient {
   }
 
   /// Sends a JSON message.
-  void sendJson(Map<String, dynamic> data) {
+  void sendJson(Map<String, Object?> data) {
     send(WebSocketMessage.json(data));
   }
 
@@ -186,7 +186,7 @@ class WebSocketClient {
     send(WebSocketMessage.binary(data));
   }
 
-  void _handleMessage(dynamic data) {
+  void _handleMessage(Object? data) {
     WebSocketMessage message;
 
     if (data is String) {
@@ -333,9 +333,9 @@ extension WebSocketClientExtension on WebSocketClient {
   }
 
   /// Filters and maps JSON messages.
-  Stream<Map<String, dynamic>> get jsonMessages {
+  Stream<Map<String, Object?>> get jsonMessages {
     return messages
         .where((m) => m.type == MessageType.json)
-        .map((m) => m.data as Map<String, dynamic>);
+        .map((m) => m.data as Map<String, Object?>);
   }
 }

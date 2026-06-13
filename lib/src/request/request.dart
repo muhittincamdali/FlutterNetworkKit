@@ -62,7 +62,7 @@ class NetworkRequest {
   factory NetworkRequest.get(
     String path, {
     String? baseUrl,
-    Map<String, dynamic>? queryParameters,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
   }) {
     return NetworkRequest(
@@ -78,8 +78,8 @@ class NetworkRequest {
   factory NetworkRequest.post(
     String path, {
     String? baseUrl,
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
   }) {
     return NetworkRequest(
@@ -96,8 +96,8 @@ class NetworkRequest {
   factory NetworkRequest.put(
     String path, {
     String? baseUrl,
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
   }) {
     return NetworkRequest(
@@ -114,8 +114,8 @@ class NetworkRequest {
   factory NetworkRequest.patch(
     String path, {
     String? baseUrl,
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
   }) {
     return NetworkRequest(
@@ -132,8 +132,8 @@ class NetworkRequest {
   factory NetworkRequest.delete(
     String path, {
     String? baseUrl,
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
   }) {
     return NetworkRequest(
@@ -156,13 +156,13 @@ class NetworkRequest {
   final String? baseUrl;
 
   /// Query parameters to append to the URL.
-  final Map<String, dynamic>? queryParameters;
+  final Map<String, Object?>? queryParameters;
 
   /// Headers to include in the request.
   final Map<String, String>? headers;
 
   /// The request body.
-  final dynamic body;
+  final Object? body;
 
   /// The content type of the request body.
   final String? contentType;
@@ -171,7 +171,7 @@ class NetworkRequest {
   final ResponseType responseType;
 
   /// Extra data associated with this request.
-  final Map<String, dynamic>? extra;
+  final Map<String, Object?>? extra;
 
   /// Whether to follow redirects.
   final bool followRedirects;
@@ -251,12 +251,12 @@ class NetworkRequest {
     HttpMethod? method,
     String? path,
     String? baseUrl,
-    Map<String, dynamic>? queryParameters,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
-    dynamic body,
+    Object? body,
     String? contentType,
     ResponseType? responseType,
-    Map<String, dynamic>? extra,
+    Map<String, Object?>? extra,
     bool? followRedirects,
     int? maxRedirects,
     Duration? receiveTimeout,
@@ -284,7 +284,7 @@ class NetworkRequest {
   }
 
   /// Returns a JSON representation of this request for logging.
-  Map<String, dynamic> toJson() {
+  Map<String, Object?> toJson() {
     return {
       'method': method.value,
       'path': path,
@@ -297,7 +297,7 @@ class NetworkRequest {
     };
   }
 
-  dynamic _serializeBody(dynamic body) {
+  Object? _serializeBody(Object? body) {
     if (body == null) return null;
     if (body is String) return body;
     if (body is Map || body is List) return body;
@@ -349,8 +349,8 @@ extension NetworkRequestExtension on NetworkRequest {
   }
 
   /// Adds a query parameter to this request.
-  NetworkRequest addQueryParameter(String name, dynamic value) {
-    final newParams = Map<String, dynamic>.from(queryParameters ?? {});
+  NetworkRequest addQueryParameter(String name, Object? value) {
+    final newParams = Map<String, Object?>.from(queryParameters ?? {});
     newParams[name] = value;
     return copyWith(queryParameters: newParams);
   }
@@ -358,14 +358,14 @@ extension NetworkRequestExtension on NetworkRequest {
   /// Removes a query parameter from this request.
   NetworkRequest removeQueryParameter(String name) {
     if (queryParameters == null) return this;
-    final newParams = Map<String, dynamic>.from(queryParameters!);
+    final newParams = Map<String, Object?>.from(queryParameters!);
     newParams.remove(name);
     return copyWith(queryParameters: newParams);
   }
 
   /// Adds extra data to this request.
-  NetworkRequest addExtra(String key, dynamic value) {
-    final newExtra = Map<String, dynamic>.from(extra ?? {});
+  NetworkRequest addExtra(String key, Object? value) {
+    final newExtra = Map<String, Object?>.from(extra ?? {});
     newExtra[key] = value;
     return copyWith(extra: newExtra);
   }

@@ -149,10 +149,10 @@ class NetworkClient extends BaseClient {
   @override
   Future<network.NetworkResponse<T>> get<T>(
     String path, {
-    Map<String, dynamic>? queryParameters,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
-    T Function(dynamic)? decoder,
+    T Function(Object?)? decoder,
     bool useCache = true,
   }) async {
     final metrics = RequestMetrics.start(HttpMethod.get, path);
@@ -174,7 +174,7 @@ class NetworkClient extends BaseClient {
         }
       }
 
-      final response = await _dio.get<dynamic>(
+      final response = await _dio.get<Object?>(
         path,
         queryParameters: queryParameters,
         options: Options(headers: headers),
@@ -222,16 +222,16 @@ class NetworkClient extends BaseClient {
   @override
   Future<network.NetworkResponse<T>> post<T>(
     String path, {
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
-    T Function(dynamic)? decoder,
+    T Function(Object?)? decoder,
   }) async {
     final metrics = RequestMetrics.start(HttpMethod.post, path);
 
     try {
-      final response = await _dio.post<dynamic>(
+      final response = await _dio.post<Object?>(
         path,
         data: body,
         queryParameters: queryParameters,
@@ -269,16 +269,16 @@ class NetworkClient extends BaseClient {
   @override
   Future<network.NetworkResponse<T>> put<T>(
     String path, {
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
-    T Function(dynamic)? decoder,
+    T Function(Object?)? decoder,
   }) async {
     final metrics = RequestMetrics.start(HttpMethod.put, path);
 
     try {
-      final response = await _dio.put<dynamic>(
+      final response = await _dio.put<Object?>(
         path,
         data: body,
         queryParameters: queryParameters,
@@ -316,16 +316,16 @@ class NetworkClient extends BaseClient {
   @override
   Future<network.NetworkResponse<T>> patch<T>(
     String path, {
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
-    T Function(dynamic)? decoder,
+    T Function(Object?)? decoder,
   }) async {
     final metrics = RequestMetrics.start(HttpMethod.patch, path);
 
     try {
-      final response = await _dio.patch<dynamic>(
+      final response = await _dio.patch<Object?>(
         path,
         data: body,
         queryParameters: queryParameters,
@@ -363,16 +363,16 @@ class NetworkClient extends BaseClient {
   @override
   Future<network.NetworkResponse<T>> delete<T>(
     String path, {
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
-    T Function(dynamic)? decoder,
+    T Function(Object?)? decoder,
   }) async {
     final metrics = RequestMetrics.start(HttpMethod.delete, path);
 
     try {
-      final response = await _dio.delete<dynamic>(
+      final response = await _dio.delete<Object?>(
         path,
         data: body,
         queryParameters: queryParameters,
@@ -414,7 +414,7 @@ class NetworkClient extends BaseClient {
   /// Performs a HEAD request to the specified [path].
   Future<network.NetworkResponse<void>> head(
     String path, {
-    Map<String, dynamic>? queryParameters,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
   }) async {
@@ -457,14 +457,14 @@ class NetworkClient extends BaseClient {
     Map<String, String>? headers,
     CancelToken? cancelToken,
     void Function(double progress)? onProgress,
-    T Function(dynamic)? decoder,
+    T Function(Object?)? decoder,
   }) async {
     final metrics = RequestMetrics.start(HttpMethod.post, path);
 
     try {
       final formData = await request.toFormData();
 
-      final response = await _dio.post<dynamic>(
+      final response = await _dio.post<Object?>(
         path,
         data: formData,
         options: Options(headers: headers),
@@ -509,7 +509,7 @@ class NetworkClient extends BaseClient {
   Future<String> download(
     String url,
     String savePath, {
-    Map<String, dynamic>? queryParameters,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
     void Function(double progress)? onProgress,
@@ -572,7 +572,7 @@ class NetworkClient extends BaseClient {
     }
   }
 
-  String _buildCacheKey(String path, Map<String, dynamic>? queryParameters) {
+  String _buildCacheKey(String path, Map<String, Object?>? queryParameters) {
     final buffer = StringBuffer(path);
     if (queryParameters != null && queryParameters.isNotEmpty) {
       final sortedParams = Map.fromEntries(

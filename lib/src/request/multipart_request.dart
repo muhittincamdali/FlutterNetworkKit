@@ -24,13 +24,13 @@ class MultipartRequest {
   MultipartRequest();
 
   final List<MultipartFile> _files = [];
-  final Map<String, dynamic> _fields = {};
+  final Map<String, Object?> _fields = {};
 
   /// The list of files to upload.
   List<MultipartFile> get files => List.unmodifiable(_files);
 
   /// The form fields to include.
-  Map<String, dynamic> get fields => Map.unmodifiable(_fields);
+  Map<String, Object?> get fields => Map.unmodifiable(_fields);
 
   /// Adds a file from the filesystem.
   ///
@@ -116,7 +116,7 @@ class MultipartRequest {
   }
 
   /// Adds a JSON field to the request.
-  void addJsonField(String name, dynamic value) {
+  void addJsonField(String name, Object? value) {
     _fields[name] = value;
   }
 

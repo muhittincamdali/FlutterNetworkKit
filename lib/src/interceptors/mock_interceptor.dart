@@ -37,7 +37,7 @@ class MockResponse {
   }
 
   /// The mock response data.
-  final dynamic data;
+  final Object? data;
 
   /// The mock status code.
   final int statusCode;
@@ -101,7 +101,7 @@ class MockInterceptor extends NetworkInterceptor {
   final void Function(NetworkRequest request)? onMockMiss;
 
   final Map<String, MockResponse> _mocks = {};
-  final Map<String, MockResponse Function(NetworkRequest)> _dynamicMocks = {};
+  final Map<String, MockResponse Function(NetworkRequest)> _Object?Mocks = {};
   final List<MockHandler> _handlers = [];
 
   final _random = Random();
@@ -122,14 +122,14 @@ class MockInterceptor extends NetworkInterceptor {
     _mocks[key] = response;
   }
 
-  /// Adds a dynamic mock that generates responses based on the request.
+  /// Adds a Object? mock that generates responses based on the request.
   void addDynamicMock({
     required HttpMethod method,
     required String path,
     required MockResponse Function(NetworkRequest request) handler,
   }) {
     final key = _buildKey(method, path);
-    _dynamicMocks[key] = handler;
+    _Object?Mocks[key] = handler;
   }
 
   /// Adds a custom mock handler.
@@ -141,13 +141,13 @@ class MockInterceptor extends NetworkInterceptor {
   void removeMock(HttpMethod method, String path) {
     final key = _buildKey(method, path);
     _mocks.remove(key);
-    _dynamicMocks.remove(key);
+    _Object?Mocks.remove(key);
   }
 
   /// Clears all mocks.
   void clearMocks() {
     _mocks.clear();
-    _dynamicMocks.clear();
+    _Object?Mocks.clear();
     _handlers.clear();
   }
 
@@ -179,10 +179,10 @@ class MockInterceptor extends NetworkInterceptor {
       return _createResult(mockResponse);
     }
 
-    // Check dynamic mocks
-    final dynamicHandler = _dynamicMocks[key];
-    if (dynamicHandler != null) {
-      final response = dynamicHandler(request);
+    // Check Object? mocks
+    final Object?Handler = _Object?Mocks[key];
+    if (Object?Handler != null) {
+      final response = Object?Handler(request);
       onMockHit?.call(request, response);
       await _applyDelay(response.delay);
       return _createResult(response);
@@ -255,13 +255,13 @@ class MockInterceptor extends NetworkInterceptor {
         statusCode: mock.statusCode,
         message: mock.data?['message'] as String? ?? 'Mock error',
         errorCode: mock.data?['code'] as String?,
-        validationErrors: (mock.data?['errors'] as Map<String, dynamic>?)?.map(
+        validationErrors: (mock.data?['errors'] as Map<String, Object?>?)?.map(
           (k, v) => MapEntry(k, (v as List).cast<String>()),
         ),
       ));
     }
 
-    return InterceptorResult.resolve(NetworkResponse<dynamic>(
+    return InterceptorResult.resolve(NetworkResponse<Object?>(
       data: mock.data,
       statusCode: mock.statusCode,
       headers: mock.headers,
