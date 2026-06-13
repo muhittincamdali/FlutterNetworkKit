@@ -30,6 +30,16 @@ class ApiError implements Exception {
     this.traceId,
   });
 
+  /// Creates an [ApiError] for a generic request failure.
+  factory ApiError.requestFailed(Object? error) {
+    return ApiError(
+      statusCode: 0,
+      message: error?.toString() ?? 'Request failed',
+      errorCode: 'REQUEST_FAILED',
+      timestamp: DateTime.now(),
+    );
+  }
+
   /// Creates an [ApiError] from a Dio error.
   factory ApiError.fromDioError(DioException error) {
     final response = error.response;
@@ -38,10 +48,10 @@ class ApiError implements Exception {
     String message = error.message ?? 'Unknown error';
     String? errorCode;
     Map<String, List<String>>? validationErrors;
-    Map<String, dynamic>? details;
+    Map<String, Object?>? details;
 
     // Try to parse error details from response
-    if (data is Map<String, dynamic>) {
+    if (data is Map<String, Object?>) {
       message = data['message'] as String? ??
           data['error'] as String? ??
           message;
@@ -49,7 +59,7 @@ class ApiError implements Exception {
           data['error_code'] as String?;
 
       if (data['errors'] is Map) {
-        validationErrors = (data['errors'] as Map<String, dynamic>).map(
+        validationErrors = (data['errors'] as Map<String, Object?>).map(
           (key, value) => MapEntry(
             key,
             value is List
@@ -59,7 +69,7 @@ class ApiError implements Exception {
         );
       }
 
-      details = data['details'] as Map<String, dynamic>?;
+      details = data['details'] as Map<String, Object?>?;
     }
 
     return ApiError(
@@ -75,19 +85,19 @@ class ApiError implements Exception {
   }
 
   /// Creates an [ApiError] from an HTTP response.
-  factory ApiError.fromResponse(int statusCode, dynamic data) {
+  factory ApiError.fromResponse(int statusCode, Object? data) {
     String message = 'Request failed';
     String? errorCode;
     Map<String, List<String>>? validationErrors;
 
-    if (data is Map<String, dynamic>) {
+    if (data is Map<String, Object?>) {
       message = data['message'] as String? ??
           data['error'] as String? ??
           message;
       errorCode = data['code'] as String?;
 
       if (data['errors'] is Map) {
-        validationErrors = (data['errors'] as Map<String, dynamic>).map(
+        validationErrors = (data['errors'] as Map<String, Object?>).map(
           (key, value) => MapEntry(
             key,
             value is List
@@ -189,7 +199,7 @@ class ApiError implements Exception {
   final String? errorCode;
 
   /// Additional error details.
-  final Map<String, dynamic>? details;
+  final Map<String, Object?>? details;
 
   /// Validation errors keyed by field name.
   final Map<String, List<String>>? validationErrors;
@@ -243,7 +253,7 @@ class ApiError implements Exception {
   }
 
   /// Returns a JSON representation.
-  Map<String, dynamic> toJson() {
+  Map<String, Object?> toJson() {
     return {
       'statusCode': statusCode,
       'message': message,

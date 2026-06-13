@@ -95,10 +95,10 @@ abstract class BaseClient {
   /// [useCache] determines whether to use cached responses.
   Future<NetworkResponse<T>> get<T>(
     String path, {
-    Map<String, dynamic>? queryParameters,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
-    T Function(dynamic)? decoder,
+    T Function(Object?)? decoder,
     bool useCache = true,
   });
 
@@ -112,11 +112,11 @@ abstract class BaseClient {
   /// [decoder] is an optional function to parse the response.
   Future<NetworkResponse<T>> post<T>(
     String path, {
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
-    T Function(dynamic)? decoder,
+    T Function(Object?)? decoder,
   });
 
   /// Performs a PUT request.
@@ -129,11 +129,11 @@ abstract class BaseClient {
   /// [decoder] is an optional function to parse the response.
   Future<NetworkResponse<T>> put<T>(
     String path, {
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
-    T Function(dynamic)? decoder,
+    T Function(Object?)? decoder,
   });
 
   /// Performs a PATCH request.
@@ -146,11 +146,11 @@ abstract class BaseClient {
   /// [decoder] is an optional function to parse the response.
   Future<NetworkResponse<T>> patch<T>(
     String path, {
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
-    T Function(dynamic)? decoder,
+    T Function(Object?)? decoder,
   });
 
   /// Performs a DELETE request.
@@ -163,11 +163,11 @@ abstract class BaseClient {
   /// [decoder] is an optional function to parse the response.
   Future<NetworkResponse<T>> delete<T>(
     String path, {
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
-    T Function(dynamic)? decoder,
+    T Function(Object?)? decoder,
   });
 
   /// Disposes the client and releases resources.
@@ -180,7 +180,7 @@ mixin RequestBuilderMixin {
   String buildUrl(
     String baseUrl,
     String path, {
-    Map<String, dynamic>? queryParameters,
+    Map<String, Object?>? queryParameters,
   }) {
     final uri = Uri.parse(baseUrl).resolve(path);
 

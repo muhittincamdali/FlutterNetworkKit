@@ -291,7 +291,7 @@ class FileDownloader {
       }
 
       // Build headers
-      final requestHeaders = <String, dynamic>{
+      final requestHeaders = <String, Object?>{
         ...?headers,
       };
 

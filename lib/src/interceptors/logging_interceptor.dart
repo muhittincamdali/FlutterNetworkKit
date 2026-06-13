@@ -126,8 +126,8 @@ class LoggingInterceptor extends NetworkInterceptor {
   }
 
   @override
-  Future<ResponseInterceptorResult<NetworkResponse<dynamic>>> onResponse(
-    NetworkResponse<dynamic> response,
+  Future<ResponseInterceptorResult<NetworkResponse<Object?>>> onResponse(
+    NetworkResponse<Object?> response,
   ) async {
     if (level == LogLevel.none) {
       return ResponseInterceptorResult.next(response);
@@ -261,7 +261,7 @@ class LoggingInterceptor extends NetworkInterceptor {
     return value;
   }
 
-  String _formatBody(dynamic body) {
+  String _formatBody(Object? body) {
     if (body == null) return 'null';
 
     String formatted;
@@ -279,7 +279,7 @@ class LoggingInterceptor extends NetworkInterceptor {
       }
     } else {
       try {
-        final jsonData = (body as dynamic).toJson();
+        final jsonData = (body as Object?).toJson();
         if (prettyPrint) {
           formatted = const JsonEncoder.withIndent('  ').convert(jsonData);
         } else {
@@ -330,8 +330,8 @@ class ErrorLoggingInterceptor extends LoggingInterceptor {
   }
 
   @override
-  Future<ResponseInterceptorResult<NetworkResponse<dynamic>>> onResponse(
-    NetworkResponse<dynamic> response,
+  Future<ResponseInterceptorResult<NetworkResponse<Object?>>> onResponse(
+    NetworkResponse<Object?> response,
   ) async {
     return ResponseInterceptorResult.next(response);
   }

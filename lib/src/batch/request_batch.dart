@@ -1,3 +1,4 @@
+import '../client/base_client.dart';
 import 'dart:async';
 
 import '../request/request.dart';
@@ -327,7 +328,7 @@ class RequestBatch {
       _results[id] = result;
       return result;
     } catch (e) {
-      final error = e is ApiError ? e : ApiError.unknown(e);
+      final error = e is ApiError ? e : ApiError.requestFailed(e);
       final result = BatchRequestFailure(error);
       _results[id] = result;
       return result;
@@ -427,7 +428,7 @@ class BatchBuilder {
     String? id,
     List<String>? dependsOn,
     int priority = 0,
-    Map<String, dynamic>? queryParameters,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
   }) {
     _requests.add(BatchRequest(
@@ -450,7 +451,7 @@ class BatchBuilder {
     String? id,
     List<String>? dependsOn,
     int priority = 0,
-    dynamic body,
+    Object? body,
     Map<String, String>? headers,
   }) {
     _requests.add(BatchRequest(
@@ -473,7 +474,7 @@ class BatchBuilder {
     String? id,
     List<String>? dependsOn,
     int priority = 0,
-    dynamic body,
+    Object? body,
     Map<String, String>? headers,
   }) {
     _requests.add(BatchRequest(

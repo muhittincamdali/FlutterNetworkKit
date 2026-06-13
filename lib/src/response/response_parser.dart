@@ -8,7 +8,7 @@ import 'dart:convert';
 /// Example:
 /// ```dart
 /// final parser = ResponseParser<User>(
-///   decoder: (json) => User.fromJson(json as Map<String, dynamic>),
+///   decoder: (json) => User.fromJson(json as Map<String, Object?>),
 /// );
 ///
 /// final user = parser.parse(responseData);
@@ -21,13 +21,13 @@ class ResponseParser<T> {
   });
 
   /// The function to decode a single object.
-  final T Function(dynamic json) decoder;
+  final T Function(Object? json) decoder;
 
   /// The function to decode a list of objects.
-  final List<T> Function(dynamic json)? listDecoder;
+  final List<T> Function(Object? json)? listDecoder;
 
   /// Parses the data into type T.
-  T parse(dynamic data) {
+  T parse(Object? data) {
     if (data is String) {
       data = json.decode(data);
     }
@@ -35,7 +35,7 @@ class ResponseParser<T> {
   }
 
   /// Parses the data into type T, returning null on error.
-  T? tryParse(dynamic data) {
+  T? tryParse(Object? data) {
     try {
       return parse(data);
     } catch (_) {
@@ -44,7 +44,7 @@ class ResponseParser<T> {
   }
 
   /// Parses the data into a list of type T.
-  List<T> parseList(dynamic data) {
+  List<T> parseList(Object? data) {
     if (data is String) {
       data = json.decode(data);
     }
@@ -61,7 +61,7 @@ class ResponseParser<T> {
   }
 
   /// Parses the data into a list of type T, returning empty list on error.
-  List<T> tryParseList(dynamic data) {
+  List<T> tryParseList(Object? data) {
     try {
       return parseList(data);
     } catch (_) {
@@ -71,7 +71,7 @@ class ResponseParser<T> {
 
   /// Parses paginated response data.
   PaginatedResponse<T> parsePaginated(
-    dynamic data, {
+    Object? data, {
     String dataKey = 'data',
     String totalKey = 'total',
     String pageKey = 'page',
@@ -81,7 +81,7 @@ class ResponseParser<T> {
       data = json.decode(data);
     }
 
-    if (data is! Map<String, dynamic>) {
+    if (data is! Map<String, Object?>) {
       throw FormatException('Expected map but got ${data.runtimeType}');
     }
 
@@ -158,21 +158,21 @@ class ResponseParserFactory {
   const ResponseParserFactory._();
 
   /// Creates a parser for a single object.
-  static ResponseParser<T> object<T>(T Function(dynamic) decoder) {
+  static ResponseParser<T> object<T>(T Function(Object?) decoder) {
     return ResponseParser<T>(decoder: decoder);
   }
 
   /// Creates a parser for JSON maps.
-  static ResponseParser<Map<String, dynamic>> jsonMap() {
-    return ResponseParser<Map<String, dynamic>>(
-      decoder: (data) => data as Map<String, dynamic>,
+  static ResponseParser<Map<String, Object?>> jsonMap() {
+    return ResponseParser<Map<String, Object?>>(
+      decoder: (data) => data as Map<String, Object?>,
     );
   }
 
   /// Creates a parser for JSON lists.
-  static ResponseParser<List<dynamic>> jsonList() {
-    return ResponseParser<List<dynamic>>(
-      decoder: (data) => data as List<dynamic>,
+  static ResponseParser<List<Object?>> jsonList() {
+    return ResponseParser<List<Object?>>(
+      decoder: (data) => data as List<Object?>,
     );
   }
 
@@ -213,33 +213,33 @@ class ResponseParserFactory {
 }
 
 /// Extension for parsing responses with common types.
-extension ResponseDataParsing on dynamic {
+extension ResponseDataParsing on Object? {
   /// Parses as a map.
-  Map<String, dynamic> asMap() {
+  Map<String, Object?> asMap() {
     if (this is String) {
-      return json.decode(this as String) as Map<String, dynamic>;
+      return json.decode(this as String) as Map<String, Object?>;
     }
-    return this as Map<String, dynamic>;
+    return this as Map<String, Object?>;
   }
 
   /// Parses as a list.
-  List<dynamic> asList() {
+  List<Object?> asList() {
     if (this is String) {
-      return json.decode(this as String) as List<dynamic>;
+      return json.decode(this as String) as List<Object?>;
     }
-    return this as List<dynamic>;
+    return this as List<Object?>;
   }
 
   /// Parses as a typed list.
-  List<T> asTypedList<T>(T Function(dynamic) decoder) {
+  List<T> asTypedList<T>(T Function(Object?) decoder) {
     final list = asList();
     return list.map(decoder).toList();
   }
 
   /// Safely gets a value from a map.
   T? getValue<T>(String key) {
-    if (this is Map<String, dynamic>) {
-      return (this as Map<String, dynamic>)[key] as T?;
+    if (this is Map<String, Object?>) {
+      return (this as Map<String, Object?>)[key] as T?;
     }
     return null;
   }
@@ -247,10 +247,10 @@ extension ResponseDataParsing on dynamic {
   /// Gets a nested value using dot notation.
   T? getNestedValue<T>(String path) {
     final keys = path.split('.');
-    dynamic current = this;
+    Object? current = this;
 
     for (final key in keys) {
-      if (current is Map<String, dynamic>) {
+      if (current is Map<String, Object?>) {
         current = current[key];
       } else {
         return null;

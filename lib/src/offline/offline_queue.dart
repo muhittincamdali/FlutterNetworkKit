@@ -44,7 +44,7 @@ class QueuedRequest {
   final DateTime? expiresAt;
 
   /// Additional metadata for the request.
-  final Map<String, dynamic>? metadata;
+  final Map<String, Object?>? metadata;
 
   /// Whether this request has expired.
   bool get isExpired =>
@@ -54,7 +54,7 @@ class QueuedRequest {
   bool get canRetry => retryCount < maxRetries;
 
   /// Converts to JSON for persistence.
-  Map<String, dynamic> toJson() => {
+  Map<String, Object?> toJson() => {
         'id': id,
         'request': request.toJson(),
         'createdAt': createdAt.toIso8601String(),
@@ -66,9 +66,9 @@ class QueuedRequest {
       };
 
   /// Creates from JSON.
-  factory QueuedRequest.fromJson(Map<String, dynamic> json) => QueuedRequest(
+  factory QueuedRequest.fromJson(Map<String, Object?> json) => QueuedRequest(
         id: json['id'] as String,
-        request: NetworkRequest.fromJson(json['request'] as Map<String, dynamic>),
+        request: NetworkRequest.fromJson(json['request'] as Map<String, Object?>),
         createdAt: DateTime.parse(json['createdAt'] as String),
         priority: json['priority'] as int? ?? 0,
         maxRetries: json['maxRetries'] as int? ?? 3,
@@ -76,7 +76,7 @@ class QueuedRequest {
         expiresAt: json['expiresAt'] != null
             ? DateTime.parse(json['expiresAt'] as String)
             : null,
-        metadata: json['metadata'] as Map<String, dynamic>?,
+        metadata: json['metadata'] as Map<String, Object?>?,
       );
 }
 
@@ -250,7 +250,7 @@ class OfflineQueue {
         final json = _box!.get(key);
         if (json != null) {
           final request = QueuedRequest.fromJson(
-            jsonDecode(json) as Map<String, dynamic>,
+            jsonDecode(json) as Map<String, Object?>,
           );
           if (!request.isExpired) {
             _queue.add(request);
@@ -305,7 +305,7 @@ class OfflineQueue {
     int? priority,
     int? maxRetries,
     Duration? expiration,
-    Map<String, dynamic>? metadata,
+    Map<String, Object?>? metadata,
   }) async {
     if (_queue.length >= _config.maxQueueSize) {
       throw OfflineQueueFullException(_config.maxQueueSize);
@@ -346,7 +346,7 @@ class OfflineQueue {
     int? priority,
     int? maxRetries,
     Duration? expiration,
-    Map<String, dynamic>? metadata,
+    Map<String, Object?>? metadata,
     Duration? timeout,
   }) async {
     final id = await enqueue(

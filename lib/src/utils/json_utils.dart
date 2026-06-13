@@ -18,10 +18,10 @@ class JsonUtils {
   JsonUtils._();
 
   /// Safely parses a JSON string.
-  static Map<String, dynamic>? tryParse(String source) {
+  static Map<String, Object?>? tryParse(String source) {
     try {
       final result = json.decode(source);
-      if (result is Map<String, dynamic>) {
+      if (result is Map<String, Object?>) {
         return result;
       }
       return null;
@@ -31,7 +31,7 @@ class JsonUtils {
   }
 
   /// Parses a JSON string to a list.
-  static List<dynamic>? tryParseList(String source) {
+  static List<Object?>? tryParseList(String source) {
     try {
       final result = json.decode(source);
       if (result is List) {
@@ -44,12 +44,12 @@ class JsonUtils {
   }
 
   /// Gets a value from a nested path using dot notation.
-  static T? getPath<T>(Map<String, dynamic> json, String path) {
+  static T? getPath<T>(Map<String, Object?> json, String path) {
     final keys = path.split('.');
-    dynamic current = json;
+    Object? current = json;
 
     for (final key in keys) {
-      if (current is Map<String, dynamic>) {
+      if (current is Map<String, Object?>) {
         current = current[key];
       } else if (current is List) {
         final index = int.tryParse(key);
@@ -68,19 +68,19 @@ class JsonUtils {
 
   /// Sets a value at a nested path.
   static void setPath(
-    Map<String, dynamic> json,
+    Map<String, Object?> json,
     String path,
-    dynamic value,
+    Object? value,
   ) {
     final keys = path.split('.');
-    dynamic current = json;
+    Object? current = json;
 
     for (var i = 0; i < keys.length - 1; i++) {
       final key = keys[i];
 
-      if (current is Map<String, dynamic>) {
+      if (current is Map<String, Object?>) {
         if (!current.containsKey(key)) {
-          current[key] = <String, dynamic>{};
+          current[key] = <String, Object?>{};
         }
         current = current[key];
       } else {
@@ -88,45 +88,45 @@ class JsonUtils {
       }
     }
 
-    if (current is Map<String, dynamic>) {
+    if (current is Map<String, Object?>) {
       current[keys.last] = value;
     }
   }
 
   /// Removes a value at a nested path.
-  static bool removePath(Map<String, dynamic> json, String path) {
+  static bool removePath(Map<String, Object?> json, String path) {
     final keys = path.split('.');
-    dynamic current = json;
+    Object? current = json;
 
     for (var i = 0; i < keys.length - 1; i++) {
       final key = keys[i];
-      if (current is Map<String, dynamic>) {
+      if (current is Map<String, Object?>) {
         current = current[key];
       } else {
         return false;
       }
     }
 
-    if (current is Map<String, dynamic>) {
+    if (current is Map<String, Object?>) {
       return current.remove(keys.last) != null;
     }
     return false;
   }
 
   /// Deeply merges two JSON objects.
-  static Map<String, dynamic> merge(
-    Map<String, dynamic> base,
-    Map<String, dynamic> override,
+  static Map<String, Object?> merge(
+    Map<String, Object?> base,
+    Map<String, Object?> override,
   ) {
-    final result = Map<String, dynamic>.from(base);
+    final result = Map<String, Object?>.from(base);
 
     for (final entry in override.entries) {
       if (result.containsKey(entry.key) &&
-          result[entry.key] is Map<String, dynamic> &&
-          entry.value is Map<String, dynamic>) {
+          result[entry.key] is Map<String, Object?> &&
+          entry.value is Map<String, Object?>) {
         result[entry.key] = merge(
-          result[entry.key] as Map<String, dynamic>,
-          entry.value as Map<String, dynamic>,
+          result[entry.key] as Map<String, Object?>,
+          entry.value as Map<String, Object?>,
         );
       } else {
         result[entry.key] = entry.value;
@@ -137,24 +137,24 @@ class JsonUtils {
   }
 
   /// Flattens a nested JSON object into dot-notation keys.
-  static Map<String, dynamic> flatten(
-    Map<String, dynamic> json, {
+  static Map<String, Object?> flatten(
+    Map<String, Object?> json, {
     String prefix = '',
   }) {
-    final result = <String, dynamic>{};
+    final result = <String, Object?>{};
 
     for (final entry in json.entries) {
       final key = prefix.isEmpty ? entry.key : '$prefix.${entry.key}';
 
-      if (entry.value is Map<String, dynamic>) {
+      if (entry.value is Map<String, Object?>) {
         result.addAll(flatten(
-          entry.value as Map<String, dynamic>,
+          entry.value as Map<String, Object?>,
           prefix: key,
         ));
       } else if (entry.value is List) {
         for (var i = 0; i < (entry.value as List).length; i++) {
           final item = (entry.value as List)[i];
-          if (item is Map<String, dynamic>) {
+          if (item is Map<String, Object?>) {
             result.addAll(flatten(item, prefix: '$key.$i'));
           } else {
             result['$key.$i'] = item;
@@ -169,8 +169,8 @@ class JsonUtils {
   }
 
   /// Unflattens a dot-notation map back to nested structure.
-  static Map<String, dynamic> unflatten(Map<String, dynamic> flat) {
-    final result = <String, dynamic>{};
+  static Map<String, Object?> unflatten(Map<String, Object?> flat) {
+    final result = <String, Object?>{};
 
     for (final entry in flat.entries) {
       setPath(result, entry.key, entry.value);
@@ -180,39 +180,39 @@ class JsonUtils {
   }
 
   /// Converts all keys to camelCase.
-  static Map<String, dynamic> keysToCamelCase(Map<String, dynamic> json) {
+  static Map<String, Object?> keysToCamelCase(Map<String, Object?> json) {
     return json.map((key, value) {
       final camelKey = _toCamelCase(key);
-      final newValue = value is Map<String, dynamic>
+      final newValue = value is Map<String, Object?>
           ? keysToCamelCase(value)
           : value is List
-              ? value.map((e) => e is Map<String, dynamic> ? keysToCamelCase(e) : e).toList()
+              ? value.map((e) => e is Map<String, Object?> ? keysToCamelCase(e) : e).toList()
               : value;
       return MapEntry(camelKey, newValue);
     });
   }
 
   /// Converts all keys to snake_case.
-  static Map<String, dynamic> keysToSnakeCase(Map<String, dynamic> json) {
+  static Map<String, Object?> keysToSnakeCase(Map<String, Object?> json) {
     return json.map((key, value) {
       final snakeKey = _toSnakeCase(key);
-      final newValue = value is Map<String, dynamic>
+      final newValue = value is Map<String, Object?>
           ? keysToSnakeCase(value)
           : value is List
-              ? value.map((e) => e is Map<String, dynamic> ? keysToSnakeCase(e) : e).toList()
+              ? value.map((e) => e is Map<String, Object?> ? keysToSnakeCase(e) : e).toList()
               : value;
       return MapEntry(snakeKey, newValue);
     });
   }
 
   /// Removes null values from a map.
-  static Map<String, dynamic> removeNulls(Map<String, dynamic> json) {
-    final result = <String, dynamic>{};
+  static Map<String, Object?> removeNulls(Map<String, Object?> json) {
+    final result = <String, Object?>{};
 
     for (final entry in json.entries) {
       if (entry.value != null) {
-        if (entry.value is Map<String, dynamic>) {
-          result[entry.key] = removeNulls(entry.value as Map<String, dynamic>);
+        if (entry.value is Map<String, Object?>) {
+          result[entry.key] = removeNulls(entry.value as Map<String, Object?>);
         } else {
           result[entry.key] = entry.value;
         }
@@ -223,8 +223,8 @@ class JsonUtils {
   }
 
   /// Filters a map to only include specified keys.
-  static Map<String, dynamic> pick(
-    Map<String, dynamic> json,
+  static Map<String, Object?> pick(
+    Map<String, Object?> json,
     List<String> keys,
   ) {
     return Map.fromEntries(
@@ -233,8 +233,8 @@ class JsonUtils {
   }
 
   /// Filters a map to exclude specified keys.
-  static Map<String, dynamic> omit(
-    Map<String, dynamic> json,
+  static Map<String, Object?> omit(
+    Map<String, Object?> json,
     List<String> keys,
   ) {
     return Map.fromEntries(
@@ -243,8 +243,8 @@ class JsonUtils {
   }
 
   /// Deep clones a JSON object.
-  static Map<String, dynamic> deepClone(Map<String, dynamic> json) {
-    return json.decode(json.encode(json)) as Map<String, dynamic>;
+  static Map<String, Object?> deepClone(Map<String, Object?> json) {
+    return json.decode(json.encode(json)) as Map<String, Object?>;
   }
 
   static String _toCamelCase(String input) {
@@ -265,34 +265,34 @@ class JsonUtils {
 }
 
 /// Extension methods for JSON maps.
-extension JsonMapExtension on Map<String, dynamic> {
+extension JsonMapExtension on Map<String, Object?> {
   /// Gets a value at a nested path.
   T? getPath<T>(String path) => JsonUtils.getPath<T>(this, path);
 
   /// Sets a value at a nested path.
-  void setPath(String path, dynamic value) => JsonUtils.setPath(this, path, value);
+  void setPath(String path, Object? value) => JsonUtils.setPath(this, path, value);
 
   /// Merges with another map.
-  Map<String, dynamic> merge(Map<String, dynamic> other) =>
+  Map<String, Object?> merge(Map<String, Object?> other) =>
       JsonUtils.merge(this, other);
 
   /// Flattens to dot-notation keys.
-  Map<String, dynamic> flatten() => JsonUtils.flatten(this);
+  Map<String, Object?> flatten() => JsonUtils.flatten(this);
 
   /// Converts keys to camelCase.
-  Map<String, dynamic> keysToCamelCase() => JsonUtils.keysToCamelCase(this);
+  Map<String, Object?> keysToCamelCase() => JsonUtils.keysToCamelCase(this);
 
   /// Converts keys to snake_case.
-  Map<String, dynamic> keysToSnakeCase() => JsonUtils.keysToSnakeCase(this);
+  Map<String, Object?> keysToSnakeCase() => JsonUtils.keysToSnakeCase(this);
 
   /// Removes null values.
-  Map<String, dynamic> removeNulls() => JsonUtils.removeNulls(this);
+  Map<String, Object?> removeNulls() => JsonUtils.removeNulls(this);
 
   /// Picks specified keys.
-  Map<String, dynamic> pick(List<String> keys) => JsonUtils.pick(this, keys);
+  Map<String, Object?> pick(List<String> keys) => JsonUtils.pick(this, keys);
 
   /// Omits specified keys.
-  Map<String, dynamic> omit(List<String> keys) => JsonUtils.omit(this, keys);
+  Map<String, Object?> omit(List<String> keys) => JsonUtils.omit(this, keys);
 
   /// Safely gets a string value.
   String? getString(String key) => this[key] as String?;
@@ -310,8 +310,8 @@ extension JsonMapExtension on Map<String, dynamic> {
   List<T>? getList<T>(String key) => (this[key] as List?)?.cast<T>();
 
   /// Safely gets a map value.
-  Map<String, dynamic>? getMap(String key) =>
-      this[key] as Map<String, dynamic>?;
+  Map<String, Object?>? getMap(String key) =>
+      this[key] as Map<String, Object?>?;
 
   /// Pretty prints the JSON.
   String toPrettyString() {

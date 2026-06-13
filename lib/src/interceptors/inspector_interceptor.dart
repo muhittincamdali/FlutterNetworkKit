@@ -78,7 +78,7 @@ class InspectorInterceptor implements NetworkInterceptor {
     return InterceptorResult.next(error);
   }
 
-  int _calculateSize(dynamic data) {
+  int _calculateSize(Object? data) {
     if (data == null) return 0;
     if (data is String) return data.length;
     if (data is List<int>) return data.length;

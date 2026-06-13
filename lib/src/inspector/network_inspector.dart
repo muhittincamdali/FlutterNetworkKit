@@ -38,16 +38,16 @@ class InspectorRequest {
   final DateTime timestamp;
 
   /// Request headers.
-  final Map<String, dynamic>? requestHeaders;
+  final Map<String, Object?>? requestHeaders;
 
   /// Request body.
-  final dynamic requestBody;
+  final Object? requestBody;
 
   /// Response headers.
   final Map<String, List<String>>? responseHeaders;
 
   /// Response body.
-  final dynamic responseBody;
+  final Object? responseBody;
 
   /// HTTP status code.
   final int? statusCode;
@@ -111,7 +111,7 @@ class InspectorRequest {
   }
 
   /// Converts to JSON for export.
-  Map<String, dynamic> toJson() => {
+  Map<String, Object?> toJson() => {
         'id': id,
         'method': method,
         'url': url,
@@ -204,8 +204,8 @@ class NetworkInspector {
   String recordRequest({
     required String method,
     required String url,
-    Map<String, dynamic>? headers,
-    dynamic body,
+    Map<String, Object?>? headers,
+    Object? body,
     int? requestSize,
   }) {
     if (!_config.enabled) return '';
@@ -233,7 +233,7 @@ class NetworkInspector {
     required String id,
     required int statusCode,
     Map<String, List<String>>? headers,
-    dynamic body,
+    Object? body,
     Duration? duration,
     int? responseSize,
     bool fromCache = false,
@@ -290,7 +290,7 @@ class NetworkInspector {
     _notifyListeners();
   }
 
-  dynamic _truncateBody(dynamic body) {
+  Object? _truncateBody(Object? body) {
     if (body == null) return null;
 
     String stringBody;

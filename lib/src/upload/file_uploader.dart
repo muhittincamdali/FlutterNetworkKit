@@ -221,7 +221,7 @@ class FileUploader {
     required File file,
     required String uploadUrl,
     String fieldName = 'file',
-    Map<String, dynamic>? additionalFields,
+    Map<String, Object?>? additionalFields,
     Map<String, String>? headers,
     UploadConfig? config,
   }) async {
@@ -247,7 +247,7 @@ class FileUploader {
   Future<void> _executeUpload(
     UploadTask task,
     String fieldName,
-    Map<String, dynamic>? additionalFields,
+    Map<String, Object?>? additionalFields,
     Map<String, String>? headers,
   ) async {
     task._setState(UploadState.uploading);
@@ -276,7 +276,7 @@ class FileUploader {
       });
 
       // Execute upload
-      final response = await _dio.post<dynamic>(
+      final response = await _dio.post<Object?>(
         task.uploadUrl,
         data: formData,
         options: Options(
@@ -316,7 +316,7 @@ class FileUploader {
     required String filename,
     String fieldName = 'file',
     String? mimeType,
-    Map<String, dynamic>? additionalFields,
+    Map<String, Object?>? additionalFields,
     Map<String, String>? headers,
     UploadConfig? config,
   }) async {
@@ -345,7 +345,7 @@ class FileUploader {
     required List<File> files,
     required String uploadUrl,
     String fieldName = 'files',
-    Map<String, dynamic>? additionalFields,
+    Map<String, Object?>? additionalFields,
     Map<String, String>? headers,
     UploadConfig? config,
   }) async {

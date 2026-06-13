@@ -62,7 +62,7 @@ class GraphQLClient {
   /// [decoder] is a function to parse the response data.
   Future<GraphQLResult<T>> query<T>(
     GraphQLQuery query, {
-    T Function(Map<String, dynamic>)? decoder,
+    T Function(Map<String, Object?>)? decoder,
     Map<String, String>? headers,
   }) async {
     return _execute<T>(
@@ -81,7 +81,7 @@ class GraphQLClient {
   /// [decoder] is a function to parse the response data.
   Future<GraphQLResult<T>> mutate<T>(
     GraphQLMutation mutation, {
-    T Function(Map<String, dynamic>)? decoder,
+    T Function(Map<String, Object?>)? decoder,
     Map<String, String>? headers,
   }) async {
     return _execute<T>(
@@ -96,9 +96,9 @@ class GraphQLClient {
   /// Executes a raw GraphQL operation.
   Future<GraphQLResult<T>> execute<T>(
     String document, {
-    Map<String, dynamic>? variables,
+    Map<String, Object?>? variables,
     String? operationName,
-    T Function(Map<String, dynamic>)? decoder,
+    T Function(Map<String, Object?>)? decoder,
     Map<String, String>? headers,
   }) async {
     return _execute<T>(
@@ -112,12 +112,12 @@ class GraphQLClient {
 
   Future<GraphQLResult<T>> _execute<T>(
     String document,
-    Map<String, dynamic>? variables,
+    Map<String, Object?>? variables,
     String? operationName, {
-    T Function(Map<String, dynamic>)? decoder,
+    T Function(Map<String, Object?>)? decoder,
     Map<String, String>? headers,
   }) async {
-    final body = <String, dynamic>{
+    final body = <String, Object?>{
       'query': document,
       if (variables != null && variables.isNotEmpty) 'variables': variables,
       if (operationName != null) 'operationName': operationName,
@@ -130,7 +130,7 @@ class GraphQLClient {
     };
 
     try {
-      final response = await networkClient.post<Map<String, dynamic>>(
+      final response = await networkClient.post<Map<String, Object?>>(
         endpoint,
         body: body,
         headers: mergedHeaders,
@@ -145,20 +145,20 @@ class GraphQLClient {
   }
 
   GraphQLResult<T> _parseResponse<T>(
-    NetworkResponse<Map<String, dynamic>> response,
-    T Function(Map<String, dynamic>)? decoder,
+    NetworkResponse<Map<String, Object?>> response,
+    T Function(Map<String, Object?>)? decoder,
   ) {
     final data = response.data;
 
     // Check for GraphQL errors
     if (data.containsKey('errors')) {
       final errors = (data['errors'] as List)
-          .map((e) => GraphQLError.fromJson(e as Map<String, dynamic>))
+          .map((e) => GraphQLError.fromJson(e as Map<String, Object?>))
           .toList();
 
       // If there's data alongside errors, return both
       if (data.containsKey('data') && data['data'] != null) {
-        final resultData = data['data'] as Map<String, dynamic>;
+        final resultData = data['data'] as Map<String, Object?>;
         final parsedData = decoder != null ? decoder(resultData) : resultData as T;
         return GraphQLResult<T>.partial(parsedData, errors);
       }
@@ -169,7 +169,7 @@ class GraphQLClient {
 
     // Success case
     if (data.containsKey('data')) {
-      final resultData = data['data'] as Map<String, dynamic>;
+      final resultData = data['data'] as Map<String, Object?>;
       final parsedData = decoder != null ? decoder(resultData) : resultData as T;
       return GraphQLResult<T>.success(parsedData);
     }
@@ -181,13 +181,13 @@ class GraphQLClient {
   }
 
   /// Executes multiple queries in a single request.
-  Future<List<GraphQLResult<dynamic>>> batch(
+  Future<List<GraphQLResult<Object?>>> batch(
     List<GraphQLOperation> operations,
   ) async {
     final bodies = operations.map((op) => op.toRequestBody()).toList();
 
     try {
-      final response = await networkClient.post<List<dynamic>>(
+      final response = await networkClient.post<List<Object?>>(
         endpoint,
         body: bodies,
         headers: {
@@ -197,8 +197,8 @@ class GraphQLClient {
       );
 
       return response.data.map((item) {
-        final data = item as Map<String, dynamic>;
-        return _parseResponse<dynamic>(
+        final data = item as Map<String, Object?>;
+        return _parseResponse<Object?>(
           NetworkResponse(data: data, statusCode: response.statusCode),
           null,
         );
@@ -206,7 +206,7 @@ class GraphQLClient {
     } on ApiError catch (e) {
       final error = GraphQLError.fromApiError(e);
       onError?.call(error);
-      return operations.map((_) => GraphQLResult<dynamic>.error(error)).toList();
+      return operations.map((_) => GraphQLResult<Object?>.error(error)).toList();
     }
   }
 
@@ -307,14 +307,14 @@ class GraphQLError implements Exception {
   });
 
   /// Creates a [GraphQLError] from JSON.
-  factory GraphQLError.fromJson(Map<String, dynamic> json) {
+  factory GraphQLError.fromJson(Map<String, Object?> json) {
     return GraphQLError(
       message: json['message'] as String? ?? 'Unknown error',
       locations: (json['locations'] as List?)
-          ?.map((e) => GraphQLErrorLocation.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => GraphQLErrorLocation.fromJson(e as Map<String, Object?>))
           .toList(),
       path: (json['path'] as List?)?.cast<String>(),
-      extensions: json['extensions'] as Map<String, dynamic>?,
+      extensions: json['extensions'] as Map<String, Object?>?,
     );
   }
 
@@ -339,7 +339,7 @@ class GraphQLError implements Exception {
   final List<String>? path;
 
   /// Additional error metadata.
-  final Map<String, dynamic>? extensions;
+  final Map<String, Object?>? extensions;
 
   /// Returns the error code if available.
   String? get code => extensions?['code'] as String?;
@@ -357,7 +357,7 @@ class GraphQLErrorLocation {
   });
 
   /// Creates from JSON.
-  factory GraphQLErrorLocation.fromJson(Map<String, dynamic> json) {
+  factory GraphQLErrorLocation.fromJson(Map<String, Object?> json) {
     return GraphQLErrorLocation(
       line: json['line'] as int,
       column: json['column'] as int,
@@ -377,5 +377,5 @@ class GraphQLErrorLocation {
 /// Base class for GraphQL operations.
 abstract class GraphQLOperation {
   /// Converts this operation to a request body.
-  Map<String, dynamic> toRequestBody();
+  Map<String, Object?> toRequestBody();
 }

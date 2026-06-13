@@ -32,12 +32,12 @@ class RequestBuilder {
   HttpMethod _method = HttpMethod.get;
   String _path = '';
   String? _baseUrl;
-  final Map<String, dynamic> _queryParameters = {};
+  final Map<String, Object?> _queryParameters = {};
   final Map<String, String> _headers = {};
-  dynamic _body;
+  Object? _body;
   String? _contentType;
   ResponseType _responseType = ResponseType.json;
-  final Map<String, dynamic> _extra = {};
+  final Map<String, Object?> _extra = {};
   bool _followRedirects = true;
   int _maxRedirects = 5;
   Duration? _receiveTimeout;
@@ -95,13 +95,13 @@ class RequestBuilder {
   }
 
   /// Adds a query parameter to this request.
-  RequestBuilder queryParam(String name, dynamic value) {
+  RequestBuilder queryParam(String name, Object? value) {
     _queryParameters[name] = value;
     return this;
   }
 
   /// Adds multiple query parameters to this request.
-  RequestBuilder queryParams(Map<String, dynamic> params) {
+  RequestBuilder queryParams(Map<String, Object?> params) {
     _queryParameters.addAll(params);
     return this;
   }
@@ -139,20 +139,20 @@ class RequestBuilder {
   }
 
   /// Sets the request body.
-  RequestBuilder body(dynamic body) {
+  RequestBuilder body(Object? body) {
     _body = body;
     return this;
   }
 
   /// Sets the request body as JSON.
-  RequestBuilder json(Map<String, dynamic> json) {
+  RequestBuilder json(Map<String, Object?> json) {
     _body = json;
     _contentType = 'application/json';
     return this;
   }
 
   /// Sets the request body as form data.
-  RequestBuilder form(Map<String, dynamic> form) {
+  RequestBuilder form(Map<String, Object?> form) {
     _body = FormData.fromMap(form);
     _contentType = 'application/x-www-form-urlencoded';
     return this;
@@ -195,7 +195,7 @@ class RequestBuilder {
   }
 
   /// Adds extra data to this request.
-  RequestBuilder extra(String key, dynamic value) {
+  RequestBuilder extra(String key, Object? value) {
     _extra[key] = value;
     return this;
   }
@@ -287,7 +287,7 @@ class RequestBuilder {
   /// [T] is the expected response type.
   /// [decoder] is an optional function to parse the response.
   Future<NetworkResponse<T>> execute<T>({
-    T Function(dynamic)? decoder,
+    T Function(Object?)? decoder,
   }) async {
     switch (_method) {
       case HttpMethod.get:
@@ -388,7 +388,7 @@ class BatchRequestBuilder {
   }
 
   /// Creates and adds a GET request to the batch.
-  BatchRequestBuilder get(String path, {Map<String, dynamic>? queryParameters}) {
+  BatchRequestBuilder get(String path, {Map<String, Object?>? queryParameters}) {
     _requests.add(
       RequestBuilder(client: client)
           .get()
@@ -399,7 +399,7 @@ class BatchRequestBuilder {
   }
 
   /// Creates and adds a POST request to the batch.
-  BatchRequestBuilder post(String path, {dynamic body}) {
+  BatchRequestBuilder post(String path, {Object? body}) {
     _requests.add(
       RequestBuilder(client: client)
           .post()
@@ -416,7 +416,7 @@ class BatchRequestBuilder {
   Future<List<BatchResult>> executeParallel() async {
     final futures = _requests.map((r) async {
       try {
-        final response = await r.execute<dynamic>();
+        final response = await r.execute<Object?>();
         return BatchResult.success(response);
       } catch (e) {
         return BatchResult.failure(e as Exception);
@@ -434,7 +434,7 @@ class BatchRequestBuilder {
 
     for (final request in _requests) {
       try {
-        final response = await request.execute<dynamic>();
+        final response = await request.execute<Object?>();
         results.add(BatchResult.success(response));
       } catch (e) {
         results.add(BatchResult.failure(e as Exception));
@@ -466,7 +466,7 @@ class BatchResult {
   });
 
   /// Creates a successful batch result.
-  factory BatchResult.success(NetworkResponse<dynamic> response) {
+  factory BatchResult.success(NetworkResponse<Object?> response) {
     return BatchResult._(response: response, isSuccess: true);
   }
 
@@ -476,7 +476,7 @@ class BatchResult {
   }
 
   /// The response if successful.
-  final NetworkResponse<dynamic>? response;
+  final NetworkResponse<Object?>? response;
 
   /// The error if failed.
   final Exception? error;

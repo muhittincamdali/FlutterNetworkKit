@@ -32,7 +32,7 @@ class GraphQLMutation implements GraphQLOperation {
 
   /// Creates a mutation from a document string.
   factory GraphQLMutation.document(String document, {
-    Map<String, dynamic>? variables,
+    Map<String, Object?>? variables,
   }) {
     final operationName = _extractOperationName(document);
     return GraphQLMutation(
@@ -46,13 +46,13 @@ class GraphQLMutation implements GraphQLOperation {
   final String mutation;
 
   /// Variables for the mutation.
-  final Map<String, dynamic>? variables;
+  final Map<String, Object?>? variables;
 
   /// The operation name (for documents with multiple operations).
   final String? operationName;
 
   @override
-  Map<String, dynamic> toRequestBody() {
+  Map<String, Object?> toRequestBody() {
     return {
       'query': mutation,
       if (variables != null && variables!.isNotEmpty) 'variables': variables,
@@ -61,7 +61,7 @@ class GraphQLMutation implements GraphQLOperation {
   }
 
   /// Creates a copy with updated variables.
-  GraphQLMutation withVariables(Map<String, dynamic> variables) {
+  GraphQLMutation withVariables(Map<String, Object?> variables) {
     return GraphQLMutation(
       mutation: mutation,
       variables: {...?this.variables, ...variables},
@@ -70,7 +70,7 @@ class GraphQLMutation implements GraphQLOperation {
   }
 
   /// Creates a copy with a specific variable set.
-  GraphQLMutation setVariable(String name, dynamic value) {
+  GraphQLMutation setVariable(String name, Object? value) {
     return GraphQLMutation(
       mutation: mutation,
       variables: {...?variables, name: value},
@@ -79,7 +79,7 @@ class GraphQLMutation implements GraphQLOperation {
   }
 
   /// Creates a copy with input data.
-  GraphQLMutation withInput(Map<String, dynamic> input) {
+  GraphQLMutation withInput(Map<String, Object?> input) {
     return setVariable('input', input);
   }
 
@@ -102,7 +102,7 @@ class GraphQLMutation implements GraphQLOperation {
 class GraphQLMutationBuilder {
   String? _mutation;
   String? _operationName;
-  final Map<String, dynamic> _variables = {};
+  final Map<String, Object?> _variables = {};
   final List<String> _returnFields = [];
 
   /// Sets the mutation string.
@@ -118,19 +118,19 @@ class GraphQLMutationBuilder {
   }
 
   /// Adds a variable.
-  GraphQLMutationBuilder variable(String name, dynamic value) {
+  GraphQLMutationBuilder variable(String name, Object? value) {
     _variables[name] = value;
     return this;
   }
 
   /// Adds multiple variables.
-  GraphQLMutationBuilder variables(Map<String, dynamic> variables) {
+  GraphQLMutationBuilder variables(Map<String, Object?> variables) {
     _variables.addAll(variables);
     return this;
   }
 
   /// Sets the input variable.
-  GraphQLMutationBuilder input(Map<String, dynamic> input) {
+  GraphQLMutationBuilder input(Map<String, Object?> input) {
     _variables['input'] = input;
     return this;
   }
@@ -168,7 +168,7 @@ class GraphQLMutationTemplates {
   /// Creates a create mutation template.
   static GraphQLMutation create(
     String typeName, {
-    required Map<String, dynamic> input,
+    required Map<String, Object?> input,
     List<String> returnFields = const ['id'],
   }) {
     final fieldStr = returnFields.join('\n        ');
@@ -189,7 +189,7 @@ class GraphQLMutationTemplates {
   static GraphQLMutation update(
     String typeName, {
     required String id,
-    required Map<String, dynamic> input,
+    required Map<String, Object?> input,
     List<String> returnFields = const ['id'],
   }) {
     final fieldStr = returnFields.join('\n        ');
@@ -228,7 +228,7 @@ class GraphQLMutationTemplates {
   /// Creates a batch create mutation template.
   static GraphQLMutation batchCreate(
     String typeName, {
-    required List<Map<String, dynamic>> inputs,
+    required List<Map<String, Object?>> inputs,
     List<String> returnFields = const ['id'],
   }) {
     final fieldStr = returnFields.join('\n        ');
@@ -268,7 +268,7 @@ class GraphQLMutationTemplates {
 /// Extension methods for mutations.
 extension GraphQLMutationExtension on GraphQLMutation {
   /// Adds optimistic response data.
-  GraphQLMutation withOptimisticResponse(Map<String, dynamic> response) {
+  GraphQLMutation withOptimisticResponse(Map<String, Object?> response) {
     return GraphQLMutation(
       mutation: mutation,
       variables: {

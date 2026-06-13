@@ -28,7 +28,7 @@ class GraphQLQuery implements GraphQLOperation {
 
   /// Creates a query from a document string.
   factory GraphQLQuery.document(String document, {
-    Map<String, dynamic>? variables,
+    Map<String, Object?>? variables,
   }) {
     final operationName = _extractOperationName(document);
     return GraphQLQuery(
@@ -42,13 +42,13 @@ class GraphQLQuery implements GraphQLOperation {
   final String query;
 
   /// Variables for the query.
-  final Map<String, dynamic>? variables;
+  final Map<String, Object?>? variables;
 
   /// The operation name (for documents with multiple operations).
   final String? operationName;
 
   @override
-  Map<String, dynamic> toRequestBody() {
+  Map<String, Object?> toRequestBody() {
     return {
       'query': query,
       if (variables != null && variables!.isNotEmpty) 'variables': variables,
@@ -57,7 +57,7 @@ class GraphQLQuery implements GraphQLOperation {
   }
 
   /// Creates a copy with updated variables.
-  GraphQLQuery withVariables(Map<String, dynamic> variables) {
+  GraphQLQuery withVariables(Map<String, Object?> variables) {
     return GraphQLQuery(
       query: query,
       variables: {...?this.variables, ...variables},
@@ -66,7 +66,7 @@ class GraphQLQuery implements GraphQLOperation {
   }
 
   /// Creates a copy with a specific variable set.
-  GraphQLQuery setVariable(String name, dynamic value) {
+  GraphQLQuery setVariable(String name, Object? value) {
     return GraphQLQuery(
       query: query,
       variables: {...?variables, name: value},
@@ -93,7 +93,7 @@ class GraphQLQuery implements GraphQLOperation {
 class GraphQLQueryBuilder {
   String? _query;
   String? _operationName;
-  final Map<String, dynamic> _variables = {};
+  final Map<String, Object?> _variables = {};
   final List<String> _fields = [];
   String? _alias;
 
@@ -110,13 +110,13 @@ class GraphQLQueryBuilder {
   }
 
   /// Adds a variable.
-  GraphQLQueryBuilder variable(String name, dynamic value) {
+  GraphQLQueryBuilder variable(String name, Object? value) {
     _variables[name] = value;
     return this;
   }
 
   /// Adds multiple variables.
-  GraphQLQueryBuilder variables(Map<String, dynamic> variables) {
+  GraphQLQueryBuilder variables(Map<String, Object?> variables) {
     _variables.addAll(variables);
     return this;
   }
@@ -212,7 +212,7 @@ extension GraphQLQueryExtension on GraphQLQuery {
   }
 
   /// Adds a filter variable.
-  GraphQLQuery withFilter(Map<String, dynamic> filter) {
+  GraphQLQuery withFilter(Map<String, Object?> filter) {
     return setVariable('filter', filter);
   }
 

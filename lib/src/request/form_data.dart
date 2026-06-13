@@ -21,7 +21,7 @@ class NetworkFormData {
   NetworkFormData();
 
   /// Creates [NetworkFormData] from a map.
-  factory NetworkFormData.fromMap(Map<String, dynamic> map) {
+  factory NetworkFormData.fromMap(Map<String, Object?> map) {
     final formData = NetworkFormData();
     map.forEach((key, value) {
       if (value is List) {
@@ -73,24 +73,24 @@ class NetworkFormData {
   }
 
   /// Appends a list field with indexed keys.
-  void appendList(String name, List<dynamic> values) {
+  void appendList(String name, List<Object?> values) {
     for (var i = 0; i < values.length; i++) {
       append('$name[$i]', values[i].toString());
     }
   }
 
   /// Appends a list field with repeated keys.
-  void appendRepeated(String name, List<dynamic> values) {
+  void appendRepeated(String name, List<Object?> values) {
     for (final value in values) {
       append(name, value.toString());
     }
   }
 
   /// Appends a nested object with dot notation keys.
-  void appendNested(String prefix, Map<String, dynamic> map) {
+  void appendNested(String prefix, Map<String, Object?> map) {
     map.forEach((key, value) {
       final fullKey = '$prefix.$key';
-      if (value is Map<String, dynamic>) {
+      if (value is Map<String, Object?>) {
         appendNested(fullKey, value);
       } else if (value is List) {
         appendList(fullKey, value);
@@ -202,7 +202,7 @@ extension FormDataParsing on String {
 }
 
 /// Extension for converting maps to form data.
-extension MapToFormData on Map<String, dynamic> {
+extension MapToFormData on Map<String, Object?> {
   /// Converts this map to form data.
   NetworkFormData toFormData() {
     return NetworkFormData.fromMap(this);

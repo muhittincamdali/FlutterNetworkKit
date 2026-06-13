@@ -50,11 +50,11 @@ class ModelGenerator {
   final List<String> _nestedClasses = [];
 
   /// Generates a Dart class from a JSON sample.
-  String generate(String className, dynamic json) {
+  String generate(String className, Object? json) {
     _generatedClasses.clear();
     _nestedClasses.clear();
 
-    final mainClass = _generateClass(className, json as Map<String, dynamic>);
+    final mainClass = _generateClass(className, json as Map<String, Object?>);
 
     final buffer = StringBuffer();
 
@@ -84,7 +84,7 @@ class ModelGenerator {
   }
 
   /// Generates multiple classes from a JSON object with multiple types.
-  Map<String, String> generateMultiple(Map<String, dynamic> schemas) {
+  Map<String, String> generateMultiple(Map<String, Object?> schemas) {
     final results = <String, String>{};
 
     for (final entry in schemas.entries) {
@@ -98,7 +98,7 @@ class ModelGenerator {
     return results;
   }
 
-  String _generateClass(String className, Map<String, dynamic> json) {
+  String _generateClass(String className, Map<String, Object?> json) {
     if (_generatedClasses.contains(className)) {
       return '';
     }
@@ -137,7 +137,7 @@ class ModelGenerator {
     // fromJson factory
     if (useJsonSerializable) {
       buffer.writeln('  /// Creates a [$className] from JSON.');
-      buffer.writeln('  factory $className.fromJson(Map<String, dynamic> json) =>');
+      buffer.writeln('  factory $className.fromJson(Map<String, Object?> json) =>');
       buffer.writeln('      _\$${className}FromJson(json);');
       buffer.writeln();
     } else {
@@ -158,7 +158,7 @@ class ModelGenerator {
     // toJson method
     if (useJsonSerializable) {
       buffer.writeln('  /// Converts this [$className] to JSON.');
-      buffer.writeln('  Map<String, dynamic> toJson() => _\$${className}ToJson(this);');
+      buffer.writeln('  Map<String, Object?> toJson() => _\$${className}ToJson(this);');
     } else {
       _generateManualToJson(buffer, className, fields);
     }
@@ -186,7 +186,7 @@ class ModelGenerator {
     return buffer.toString();
   }
 
-  _FieldInfo _analyzeField(String key, dynamic value, String parentClass) {
+  _FieldInfo _analyzeField(String key, Object? value, String parentClass) {
     final dartName = _toDartName(key);
     final dartType = _inferType(value, parentClass, key);
 
@@ -200,9 +200,9 @@ class ModelGenerator {
     );
   }
 
-  String _inferType(dynamic value, String parentClass, String fieldName) {
+  String _inferType(Object? value, String parentClass, String fieldName) {
     if (value == null) {
-      return 'dynamic';
+      return 'Object?';
     }
 
     if (value is bool) {
@@ -227,13 +227,13 @@ class ModelGenerator {
 
     if (value is List) {
       if (value.isEmpty) {
-        return 'List<dynamic>';
+        return 'List<Object?>';
       }
       final itemType = _inferType(value.first, parentClass, fieldName);
       return 'List<$itemType>';
     }
 
-    if (value is Map<String, dynamic>) {
+    if (value is Map<String, Object?>) {
       // Generate nested class
       final nestedClassName = _toClassName(fieldName);
       final nestedClass = _generateClass(nestedClassName, value);
@@ -243,7 +243,7 @@ class ModelGenerator {
       return nestedClassName;
     }
 
-    return 'dynamic';
+    return 'Object?';
   }
 
   bool _isDateTimeString(String value) {
@@ -258,17 +258,17 @@ class ModelGenerator {
     List<_FieldInfo> fields,
   ) {
     buffer.writeln('  /// Creates a [$className] from JSON.');
-    buffer.writeln('  factory $className.fromJson(Map<String, dynamic> json) {');
+    buffer.writeln('  factory $className.fromJson(Map<String, Object?> json) {');
     buffer.writeln('    return $className(');
     for (final field in fields) {
       if (field.isNested) {
-        buffer.writeln("      ${field.dartName}: ${field.dartType}.fromJson(json['${field.jsonName}'] as Map<String, dynamic>),");
-      } else if (field.isList && !field.dartType.contains('dynamic')) {
+        buffer.writeln("      ${field.dartName}: ${field.dartType}.fromJson(json['${field.jsonName}'] as Map<String, Object?>),");
+      } else if (field.isList && !field.dartType.contains('Object?')) {
         final itemType = field.dartType.replaceAll('List<', '').replaceAll('>', '');
         if (_isPrimitive(itemType)) {
           buffer.writeln("      ${field.dartName}: (json['${field.jsonName}'] as List).cast<$itemType>(),");
         } else {
-          buffer.writeln("      ${field.dartName}: (json['${field.jsonName}'] as List).map((e) => $itemType.fromJson(e as Map<String, dynamic>)).toList(),");
+          buffer.writeln("      ${field.dartName}: (json['${field.jsonName}'] as List).map((e) => $itemType.fromJson(e as Map<String, Object?>)).toList(),");
         }
       } else {
         buffer.writeln("      ${field.dartName}: json['${field.jsonName}'] as ${field.dartType}${field.required ? '' : '?'},");
@@ -286,12 +286,12 @@ class ModelGenerator {
   ) {
     buffer.writeln();
     buffer.writeln('  /// Converts this [$className] to JSON.');
-    buffer.writeln('  Map<String, dynamic> toJson() {');
+    buffer.writeln('  Map<String, Object?> toJson() {');
     buffer.writeln('    return {');
     for (final field in fields) {
       if (field.isNested) {
         buffer.writeln("      '${field.jsonName}': ${field.dartName}${field.required ? '' : '?'}.toJson(),");
-      } else if (field.isList && !field.dartType.contains('dynamic') && !_isPrimitive(_getListItemType(field.dartType))) {
+      } else if (field.isList && !field.dartType.contains('Object?') && !_isPrimitive(_getListItemType(field.dartType))) {
         buffer.writeln("      '${field.jsonName}': ${field.dartName}${field.required ? '' : '?'}.map((e) => e.toJson()).toList(),");
       } else {
         buffer.writeln("      '${field.jsonName}': ${field.dartName},");
@@ -382,7 +382,7 @@ class ModelGenerator {
   }
 
   bool _isPrimitive(String type) {
-    return ['String', 'int', 'double', 'bool', 'num', 'dynamic'].contains(type);
+    return ['String', 'int', 'double', 'bool', 'num', 'Object?'].contains(type);
   }
 
   String _getListItemType(String listType) {

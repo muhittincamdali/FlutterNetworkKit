@@ -71,7 +71,7 @@ class NetworkResponse<T> {
   final bool fromCache;
 
   /// Extra data associated with this response.
-  final Map<String, dynamic>? extra;
+  final Map<String, Object?>? extra;
 
   /// Returns true if the status code indicates success (2xx).
   bool get isSuccess => statusCode >= 200 && statusCode < 300;
@@ -174,7 +174,7 @@ class NetworkResponse<T> {
     Map<String, List<String>>? headers,
     Duration? requestTime,
     bool? fromCache,
-    Map<String, dynamic>? extra,
+    Map<String, Object?>? extra,
   }) {
     return NetworkResponse<T>(
       data: data ?? this.data,
@@ -188,7 +188,7 @@ class NetworkResponse<T> {
   }
 
   /// Returns a JSON representation for logging.
-  Map<String, dynamic> toJson() {
+  Map<String, Object?> toJson() {
     return {
       'statusCode': statusCode,
       if (statusMessage != null) 'statusMessage': statusMessage,
@@ -198,12 +198,12 @@ class NetworkResponse<T> {
     };
   }
 
-  dynamic _serializeData(dynamic data) {
+  Object? _serializeData(Object? data) {
     if (data == null) return null;
     if (data is String || data is num || data is bool) return data;
     if (data is Map || data is List) return data;
     try {
-      return (data as dynamic).toJson();
+      return (data as Object?).toJson();
     } catch (_) {
       return data.toString();
     }
