@@ -42,13 +42,13 @@ class CacheInterceptor extends NetworkInterceptor {
   final CachePolicy _defaultPolicy;
 
   /// Called when a cached response is found.
-  final void Function(String key, NetworkResponse<dynamic> response)? onCacheHit;
+  final void Function(String key, NetworkResponse<Object?> response)? onCacheHit;
 
   /// Called when no cached response is found.
   final void Function(String key)? onCacheMiss;
 
   /// Called when a response is stored in the cache.
-  final void Function(String key, NetworkResponse<dynamic> response)? onCacheStore;
+  final void Function(String key, NetworkResponse<Object?> response)? onCacheStore;
 
   /// If true, always fetch fresh data and ignore cache.
   final bool forceFresh;
@@ -97,7 +97,7 @@ class CacheInterceptor extends NetworkInterceptor {
 
     if (cachedEntry.isFresh(policy.maxAge)) {
       // Return cached response
-      final response = NetworkResponse<dynamic>(
+      final response = NetworkResponse<Object?>(
         data: cachedEntry.data,
         statusCode: cachedEntry.statusCode,
         headers: cachedEntry.headers,
@@ -111,7 +111,7 @@ class CacheInterceptor extends NetworkInterceptor {
     if (policy.staleWhileRevalidate != null &&
         cachedEntry.isStaleButUsable(policy.maxAge, policy.staleWhileRevalidate!)) {
       // Return stale response and trigger background revalidation
-      final response = NetworkResponse<dynamic>(
+      final response = NetworkResponse<Object?>(
         data: cachedEntry.data,
         statusCode: cachedEntry.statusCode,
         headers: cachedEntry.headers,
@@ -136,8 +136,8 @@ class CacheInterceptor extends NetworkInterceptor {
   }
 
   @override
-  Future<ResponseInterceptorResult<NetworkResponse<dynamic>>> onResponse(
-    NetworkResponse<dynamic> response,
+  Future<ResponseInterceptorResult<NetworkResponse<Object?>>> onResponse(
+    NetworkResponse<Object?> response,
   ) async {
     // Get cache key from request
     final cacheKey = response.extra?['_cacheKey'] as String?;
@@ -181,7 +181,7 @@ class CacheInterceptor extends NetworkInterceptor {
     if (staleData != null) {
       // Return stale cached response instead of error
       return ErrorInterceptorResult.resolve(
-        NetworkResponse<dynamic>(
+        NetworkResponse<Object?>(
           data: staleData,
           statusCode: 200,
           fromCache: true,
@@ -290,7 +290,7 @@ class CacheEntry {
   final String key;
 
   /// The cached response data.
-  final dynamic data;
+  final Object? data;
 
   /// The HTTP status code.
   final int statusCode;
@@ -322,7 +322,7 @@ class CacheEntry {
   Duration get age => DateTime.now().difference(createdAt);
 
   /// Converts to JSON for persistence.
-  Map<String, dynamic> toJson() {
+  Map<String, Object?> toJson() {
     return {
       'key': key,
       'data': data,
@@ -335,12 +335,12 @@ class CacheEntry {
   }
 
   /// Creates from JSON.
-  factory CacheEntry.fromJson(Map<String, dynamic> json) {
+  factory CacheEntry.fromJson(Map<String, Object?> json) {
     return CacheEntry(
       key: json['key'] as String,
       data: json['data'],
       statusCode: json['statusCode'] as int,
-      headers: (json['headers'] as Map<String, dynamic>?)?.map(
+      headers: (json['headers'] as Map<String, Object?>?)?.map(
         (k, v) => MapEntry(k, (v as List).cast<String>()),
       ),
       createdAt: DateTime.parse(json['createdAt'] as String),

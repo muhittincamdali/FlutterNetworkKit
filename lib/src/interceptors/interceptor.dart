@@ -36,8 +36,8 @@ abstract class NetworkInterceptor {
   ///
   /// Return [InterceptorResult.next] to continue with the response,
   /// or [InterceptorResult.reject] to convert to an error.
-  Future<ResponseInterceptorResult<NetworkResponse<dynamic>>> onResponse(
-    NetworkResponse<dynamic> response,
+  Future<ResponseInterceptorResult<NetworkResponse<Object?>>> onResponse(
+    NetworkResponse<Object?> response,
   ) {
     return Future.value(ResponseInterceptorResult.next(response));
   }
@@ -70,14 +70,14 @@ sealed class InterceptorResult<T> {
   const factory InterceptorResult.reject(ApiError error) = InterceptorReject<T>;
 
   /// Resolve with a response (short-circuit).
-  const factory InterceptorResult.resolve(NetworkResponse<dynamic> response) =
+  const factory InterceptorResult.resolve(NetworkResponse<Object?> response) =
       InterceptorResolve<T>;
 
   /// Pattern match on the result.
   R when<R>({
     required R Function(T value) next,
     required R Function(ApiError error) reject,
-    required R Function(NetworkResponse<dynamic> response) resolve,
+    required R Function(NetworkResponse<Object?> response) resolve,
   }) {
     final self = this;
     if (self is InterceptorNext<T>) {
@@ -106,7 +106,7 @@ final class InterceptorReject<T> extends InterceptorResult<T> {
 /// Resolve immediately with a response.
 final class InterceptorResolve<T> extends InterceptorResult<T> {
   const InterceptorResolve(this.response) : super._();
-  final NetworkResponse<dynamic> response;
+  final NetworkResponse<Object?> response;
 }
 
 /// Result type for response interceptors.
@@ -157,12 +157,12 @@ sealed class ErrorInterceptorResult<T> {
 
   /// Resolve with a response (recover from error).
   const factory ErrorInterceptorResult.resolve(
-      NetworkResponse<dynamic> response) = ErrorInterceptorResolve<T>;
+      NetworkResponse<Object?> response) = ErrorInterceptorResolve<T>;
 
   /// Pattern match on the result.
   R when<R>({
     required R Function(T error) next,
-    required R Function(NetworkResponse<dynamic> response) resolve,
+    required R Function(NetworkResponse<Object?> response) resolve,
   }) {
     final self = this;
     if (self is ErrorInterceptorNext<T>) {
@@ -183,7 +183,7 @@ final class ErrorInterceptorNext<T> extends ErrorInterceptorResult<T> {
 /// Resolve with a response.
 final class ErrorInterceptorResolve<T> extends ErrorInterceptorResult<T> {
   const ErrorInterceptorResolve(this.response) : super._();
-  final NetworkResponse<dynamic> response;
+  final NetworkResponse<Object?> response;
 }
 
 /// Manages a chain of interceptors.
@@ -239,15 +239,15 @@ class InterceptorChain {
   }
 
   /// Processes a response through all interceptors.
-  Future<ResponseInterceptorResult<NetworkResponse<dynamic>>> processResponse(
-    NetworkResponse<dynamic> response,
+  Future<ResponseInterceptorResult<NetworkResponse<Object?>>> processResponse(
+    NetworkResponse<Object?> response,
   ) async {
     var currentResponse = response;
 
     for (final interceptor in _interceptors.reversed) {
       final result = await interceptor.onResponse(currentResponse);
 
-      if (result is ResponseInterceptorNext<NetworkResponse<dynamic>>) {
+      if (result is ResponseInterceptorNext<NetworkResponse<Object?>>) {
         currentResponse = result.value;
       } else {
         return result;

@@ -29,7 +29,7 @@ class ServerSentEvent {
   bool get isComment => event == null && data == null;
 
   /// Parses JSON data.
-  dynamic get jsonData {
+  Object? get jsonData {
     if (data == null) return null;
     try {
       return jsonDecode(data!);

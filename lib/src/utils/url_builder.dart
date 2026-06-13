@@ -54,7 +54,7 @@ class UrlBuilder {
   }
 
   /// Adds a query parameter.
-  UrlBuilder query(String name, dynamic value) {
+  UrlBuilder query(String name, Object? value) {
     if (value != null) {
       _queryParams.putIfAbsent(name, () => []).add(value.toString());
     }
@@ -62,7 +62,7 @@ class UrlBuilder {
   }
 
   /// Adds multiple values for a query parameter.
-  UrlBuilder queryAll(String name, List<dynamic> values) {
+  UrlBuilder queryAll(String name, List<Object?> values) {
     for (final value in values) {
       query(name, value);
     }
@@ -70,7 +70,7 @@ class UrlBuilder {
   }
 
   /// Adds multiple query parameters from a map.
-  UrlBuilder queryMap(Map<String, dynamic> params) {
+  UrlBuilder queryMap(Map<String, Object?> params) {
     params.forEach((key, value) {
       if (value is List) {
         queryAll(key, value);
@@ -82,7 +82,7 @@ class UrlBuilder {
   }
 
   /// Adds a query parameter only if the condition is true.
-  UrlBuilder queryIf(bool condition, String name, dynamic value) {
+  UrlBuilder queryIf(bool condition, String name, Object? value) {
     if (condition) {
       query(name, value);
     }
@@ -90,7 +90,7 @@ class UrlBuilder {
   }
 
   /// Adds a query parameter only if the value is not null.
-  UrlBuilder queryIfNotNull(String name, dynamic value) {
+  UrlBuilder queryIfNotNull(String name, Object? value) {
     return queryIf(value != null, name, value);
   }
 
@@ -275,7 +275,7 @@ class UrlTemplate {
   final String template;
 
   /// Substitutes parameters in the template.
-  String substitute(Map<String, dynamic> params) {
+  String substitute(Map<String, Object?> params) {
     var result = template;
     for (final entry in params.entries) {
       result = result.replaceAll(
@@ -293,7 +293,7 @@ class UrlTemplate {
   }
 
   /// Returns true if all parameters are provided.
-  bool hasAllParameters(Map<String, dynamic> params) {
+  bool hasAllParameters(Map<String, Object?> params) {
     return parameterNames.every((name) => params.containsKey(name));
   }
 

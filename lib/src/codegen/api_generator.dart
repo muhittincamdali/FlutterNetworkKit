@@ -142,7 +142,7 @@ class ApiGenerator {
     // Factory constructor for JSON
     if (jsonSerializable) {
       buffer.writeln('  /// Creates a [${model.name}] from JSON.');
-      buffer.writeln('  factory ${model.name}.fromJson(Map<String, dynamic> json) =>');
+      buffer.writeln('  factory ${model.name}.fromJson(Map<String, Object?> json) =>');
       buffer.writeln('      _\$${model.name}FromJson(json);');
       buffer.writeln();
     }
@@ -163,7 +163,7 @@ class ApiGenerator {
     // toJson method
     if (jsonSerializable) {
       buffer.writeln('  /// Converts this [${model.name}] to JSON.');
-      buffer.writeln('  Map<String, dynamic> toJson() => _\$${model.name}ToJson(this);');
+      buffer.writeln('  Map<String, Object?> toJson() => _\$${model.name}ToJson(this);');
       buffer.writeln();
     }
 
@@ -260,7 +260,7 @@ class ApiGenerator {
     }
 
     // Method signature
-    final returnType = endpoint.responseType ?? 'dynamic';
+    final returnType = endpoint.responseType ?? 'Object?';
     buffer.write('  Future<NetworkResponse<$returnType>> ${endpoint.name}(');
 
     // Parameters
@@ -303,8 +303,8 @@ class ApiGenerator {
     }
 
     // Decoder
-    if (endpoint.responseType != null && endpoint.responseType != 'dynamic') {
-      buffer.writeln('      decoder: (data) => ${endpoint.responseType}.fromJson(data as Map<String, dynamic>),');
+    if (endpoint.responseType != null && endpoint.responseType != 'Object?') {
+      buffer.writeln('      decoder: (data) => ${endpoint.responseType}.fromJson(data as Map<String, Object?>),');
     }
 
     buffer.writeln('    );');

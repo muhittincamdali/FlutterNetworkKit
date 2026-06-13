@@ -105,7 +105,7 @@ class DiskCacheManager implements CacheManager {
 
       // Read metadata
       final metaContent = await metaFile.readAsString();
-      final meta = json.decode(metaContent) as Map<String, dynamic>;
+      final meta = json.decode(metaContent) as Map<String, Object?>;
 
       // Check if expired
       final expiresAt = meta['expiresAt'] != null
@@ -125,7 +125,7 @@ class DiskCacheManager implements CacheManager {
         key: key,
         data: data,
         statusCode: meta['statusCode'] as int? ?? 200,
-        headers: (meta['headers'] as Map<String, dynamic>?)?.map(
+        headers: (meta['headers'] as Map<String, Object?>?)?.map(
           (k, v) => MapEntry(k, (v as List).cast<String>()),
         ),
         createdAt: DateTime.parse(meta['createdAt'] as String),
@@ -276,7 +276,7 @@ class DiskCacheManager implements CacheManager {
         if (file is File && file.path.endsWith('.meta')) {
           try {
             final content = await file.readAsString();
-            final meta = json.decode(content) as Map<String, dynamic>;
+            final meta = json.decode(content) as Map<String, Object?>;
             final key = meta['key'] as String?;
             if (key != null) {
               keys.add(key);
@@ -341,7 +341,7 @@ class DiskCacheManager implements CacheManager {
           try {
             final stat = await file.stat();
             final content = await file.readAsString();
-            final meta = json.decode(content) as Map<String, dynamic>;
+            final meta = json.decode(content) as Map<String, Object?>;
             entries.add(_DiskCacheFileInfo(
               key: meta['key'] as String,
               modified: stat.modified,
@@ -375,7 +375,7 @@ class DiskCacheManager implements CacheManager {
           try {
             final stat = await file.stat();
             final content = await file.readAsString();
-            final meta = json.decode(content) as Map<String, dynamic>;
+            final meta = json.decode(content) as Map<String, Object?>;
             final dataFile = _getFile(dir, meta['key'] as String);
             final dataSize = await dataFile.exists() ? await dataFile.length() : 0;
             entries.add(_DiskCacheFileInfo(

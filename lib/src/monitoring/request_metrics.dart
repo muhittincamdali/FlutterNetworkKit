@@ -147,7 +147,7 @@ class RequestMetrics {
   }
 
   /// Converts to JSON.
-  Map<String, dynamic> toJson() {
+  Map<String, Object?> toJson() {
     return {
       'method': method.value,
       'path': path,
@@ -281,7 +281,7 @@ class AggregatedMetrics {
   }
 
   /// Converts to JSON.
-  Map<String, dynamic> toJson() {
+  Map<String, Object?> toJson() {
     return {
       'periodSeconds': period.inSeconds,
       'totalRequests': totalRequests,

@@ -247,7 +247,7 @@ class MemoryCacheManager implements CacheManager {
     }
   }
 
-  int _calculateSize(dynamic data) {
+  int _calculateSize(Object? data) {
     if (data == null) return 0;
     if (data is String) return data.length * 2; // UTF-16
     if (data is List<int>) return data.length;
