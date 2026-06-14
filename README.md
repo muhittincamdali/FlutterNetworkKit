@@ -15,6 +15,10 @@
 
 # FlutterNetworkKit
 
+## 🚀 Killer Feature: Zero-Dependency GraphQL Engine
+Stop carrying Apollo's massive footprint. Included is a native, high-performance `GraphQLEngine` that handles caching, variables, and WebSocket subscriptions internally—cutting your app size while maximizing speed.
+
+
 <div align="center">
 
 [![pub package](https://img.shields.io/pub/v/flutter_network_kit.svg)](https://pub.dev/packages/flutter_network_kit)
