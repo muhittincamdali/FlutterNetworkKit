@@ -15,6 +15,9 @@
 
 # FlutterNetworkKit
 
+## 🚀 Killer Feature: Multi-Threaded Networking
+Large JSON payloads cause UI stutter in standard Flutter apps. Our `IsolateNetworkClient` handles all serialization and caching on dedicated background threads, providing a perfectly smooth user experience regardless of payload size.
+
 ## 🚀 Killer Feature: Zero-Dependency GraphQL Engine
 Stop carrying Apollo's massive footprint. Included is a native, high-performance `GraphQLEngine` that handles caching, variables, and WebSocket subscriptions internally—cutting your app size while maximizing speed.
 
