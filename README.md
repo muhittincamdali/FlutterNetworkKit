@@ -1,3 +1,6 @@
+> **This package is now part of [FlutterForge](https://github.com/muhittincamdali/FlutterForge).**
+> FlutterNetworkKit was merged into FlutterForge 2.0.0 and is no longer developed here. Use FlutterForge for new work, updates and issues: https://github.com/muhittincamdali/FlutterForge
+
 <p align="center">
   <img src="https://img.shields.io/badge/Swift-6.0-FA7343?style=for-the-badge&logo=swift&logoColor=white" alt="Swift 6.0"/>
   <img src="https://img.shields.io/badge/Platform-iOS%20|%20macOS%20|%20visionOS-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Platform"/>
